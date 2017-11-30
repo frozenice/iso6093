@@ -4,13 +4,17 @@ description 'A kotlin library to parse and format floating-point numbers accordi
 
 buildscript {
   ext.kotlin_version = '1.2.0'
+  ext.dokka_version = '0.9.15'
 
   repositories {
     mavenCentral()
+    jcenter()
   }
+
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+    classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
   }
 }
 
@@ -18,6 +22,7 @@ apply plugin: 'kotlin'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'org.jetbrains.dokka'
 
 repositories {
   mavenCentral()
@@ -39,7 +44,7 @@ compileTestKotlin {
 
 task javadocJar(type: Jar) {
   classifier = 'javadoc'
-  from javadoc
+  from dokka
 }
 
 task sourcesJar(type: Jar) {
@@ -101,4 +106,15 @@ uploadArchives {
 nexusStaging {
   username = ossrhUsername
   password = ossrhPassword
+}
+
+dokka {
+  outputFormat = 'javadoc'
+
+  jdkVersion = 8
+  linkMapping {
+    dir = "src/main/kotlin"
+    url = "https://github.com/frozenice/iso6093/tree/master/src/main/kotlin"
+    suffix = "#L"
+  }
 }

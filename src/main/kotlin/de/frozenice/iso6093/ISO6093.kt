@@ -1,3 +1,4 @@
+@file:JvmName("ISO6093Format")
 package de.frozenice.iso6093
 
 import java.text.DecimalFormat
@@ -64,9 +65,20 @@ enum class Representation {
   NR3
 }
 
-// ISO 6093, 4.1
+/**
+ * The character which is inserted between the integer and the fractional part of the number.
+ *
+ * see ISO 6093, 4.1
+ */
 enum class DecimalMark(internal val character: Char) {
+  /**
+   * the comma character: `,`
+   */
   Comma(','),
+
+  /**
+   * a period: `.`
+   */
   FullStop('.')
 }
 
@@ -103,24 +115,81 @@ internal object Regexes {
   val signedNR3 = Grammar.signedNR3.toRegex()
 }
 
+/**
+ * Checks if a string matches one of the three representations.
+ *
+ * @param str the string to check
+ */
 fun isValid(str: String) = isValidNR1(str) || isValidNR2(str) || isValidNR3(str)
 
+/**
+ * Checks if a string matches the NR1 representation.
+ *
+ * @param str the string to check
+ */
 fun isValidNR1(str: String) = isValidNR1Unsigned(str) || isValidNR1Signed(str)
+
+/**
+ * Checks if a string matches the NR1 representation in its unsigned form.
+ *
+ * @param str the string to check
+ */
 fun isValidNR1Unsigned(str: String) = str.matches(Regexes.unsignedNR1)
+
+/**
+ * Checks if a string matches the NR1 representation in its signed form.
+ *
+ * @param str the string to check
+ */
 fun isValidNR1Signed(str: String) = str.matches(Regexes.signedNR1)
 
+/**
+ * Checks if a string matches the NR2 representation.
+ *
+ * @param str the string to check
+ */
 fun isValidNR2(str: String) = isValidNR2Unsigned(str) || isValidNR2Signed(str)
+
+/**
+ * Checks if a string matches the NR2 representation in its unsigned form.
+ *
+ * @param str the string to check
+ */
 fun isValidNR2Unsigned(str: String) = str.matches(Regexes.unsignedNR2)
+
+/**
+ * Checks if a string matches the NR2 representation in its signed form.
+ *
+ * @param str the string to check
+ */
 fun isValidNR2Signed(str: String) = str.matches(Regexes.signedNR2)
 
+/**
+ * Checks if a string matches the NR3 representation.
+ *
+ * @param str the string to check
+ */
 fun isValidNR3(str: String) = isValidNR3Unsigned(str) || isValidNR3Signed(str)
+
+/**
+ * Checks if a string matches the NR3 representation in its unsigned form.
+ *
+ * @param str the string to check
+ */
 fun isValidNR3Unsigned(str: String) = str.matches(Regexes.unsignedNR3)
+
+/**
+ * Checks if a string matches the NR3 representation in its signed form.
+ *
+ * @param str the string to check
+ */
 fun isValidNR3Signed(str: String) = str.matches(Regexes.signedNR3)
 
 /**
- * parses a string in either of the three representations
+ * Parses a string in either of the three representations.
  *
- * Java's Double.valueOf is used, but keep in mind this matches a superset of ISO6093
+ * Java's Double.valueOf is used, but keep in mind this matches a superset of ISO6093.
+ * use one of the `isValid*` methods, when you want to check if the input matches a representation.
  */
 fun parse(str: String): Double {
   if (!isValid(str)) throw NumberFormatException("string not formatted according to NR1, NR2 or NR3")
@@ -128,8 +197,19 @@ fun parse(str: String): Double {
   return java.lang.Double.valueOf(str.replace(',', '.'))
 }
 
+/**
+ * Formats a [Double] according the the NR1 representation.
+ *
+ * @param d the number to format
+ */
 fun formatNR1(d: Double): String = DecimalFormat("0").format(d)
 
+/**
+ * Formats a [Double] according the the NR2 representation.
+ *
+ * @param d the number to format
+ * @param decimalMark which character to use for the decimal mark (default is FullStop)
+ */
 fun formatNR2(d: Double, decimalMark: DecimalMark = DecimalMark.FullStop): String {
   val dfs = DecimalFormatSymbols()
   dfs.decimalSeparator = decimalMark.character
@@ -139,6 +219,12 @@ fun formatNR2(d: Double, decimalMark: DecimalMark = DecimalMark.FullStop): Strin
   return DecimalFormat(pattern, dfs).format(d)
 }
 
+/**
+ * Formats a [Double] according the the NR3 representation.
+ *
+ * @param d the number to format
+ * @param decimalMark which character to use for the decimal mark (default is FullStop)
+ */
 fun formatNR3(d: Double, decimalMark: DecimalMark = DecimalMark.FullStop): String {
   val dfs = DecimalFormatSymbols()
   dfs.decimalSeparator = decimalMark.character
