@@ -80,4 +80,14 @@ class ISO6093Test : StringSpec({
     parse("+0,0E+00") shouldBe 0.0.plusOrMinus(tolerance)
     parse("   0.e+0") shouldBe 0.0.plusOrMinus(tolerance)
   }
+
+  "self valid" {
+    isValid(formatNR1(1245)) shouldBe true
+
+    isValid(formatNR2(84561230.54679)) shouldBe true
+    isValid(formatNR2(84561230.54679, DecimalMark.Comma)) shouldBe true
+
+    isValid(formatNR3(84561230.54679)) shouldBe true
+    isValid(formatNR3(84561230.54679, DecimalMark.Comma)) shouldBe true
+  }
 })

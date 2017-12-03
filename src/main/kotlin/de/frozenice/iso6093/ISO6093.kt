@@ -70,7 +70,7 @@ enum class Representation {
  *
  * see ISO 6093, 4.1
  */
-enum class DecimalMark(internal val character: Char) {
+enum class DecimalMark(val character: Char) {
   /**
    * the comma character: `,`
    */
@@ -82,7 +82,7 @@ enum class DecimalMark(internal val character: Char) {
   FullStop('.')
 }
 
-internal object Grammar {
+private object Grammar {
   val digit = """[0-9]""" // 0/1/2/3/4/5/6/7/8/9
   val sign = """[\u002b\u002d]""" // + / -
   val decimalMark = """[\u002c\u002e]""" // , / .
@@ -106,7 +106,7 @@ internal object Grammar {
   val signedNR3 = """($space*(?<sign>$sign|$space)$significand$exponentMark$exponent)"""
 }
 
-internal object Regexes {
+private object Regexes {
   val unsignedNR1 = Grammar.unsignedNR1.toRegex()
   val signedNR1 = Grammar.signedNR1.toRegex()
   val unsignedNR2 = Grammar.unsignedNR2.toRegex()
@@ -198,11 +198,11 @@ fun parse(str: String): Double {
 }
 
 /**
- * Formats a [Double] according the the NR1 representation.
+ * Formats a [Long] according the the NR1 representation (integer only).
  *
- * @param d the number to format
+ * @param l the number to format
  */
-fun formatNR1(d: Double): String = DecimalFormat("0").format(d)
+fun formatNR1(l: Long): String = l.toString()
 
 /**
  * Formats a [Double] according the the NR2 representation.
