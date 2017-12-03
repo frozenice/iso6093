@@ -1,5 +1,5 @@
 group 'de.frozenice'
-version '0.0.1'
+version '0.0.2'
 description 'A kotlin library to parse and format floating-point numbers according to ISO 6093.'
 
 buildscript {
