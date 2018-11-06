@@ -130,6 +130,7 @@ gradle-app.setting
 
 ### Additional ###
 build/
+.idea/compiler.xml
 .idea/modules.xml
 .idea/*.iml
 .idea/modules
