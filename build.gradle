@@ -3,8 +3,8 @@ version '0.0.2'
 description 'A kotlin library to parse and format floating-point numbers according to ISO 6093.'
 
 buildscript {
-  ext.kotlin_version = '1.2.0'
-  ext.dokka_version = '0.9.15'
+  ext.kotlin_version = '1.3.0'
+  ext.dokka_version = '0.9.17' // https://bintray.com/kotlin/dokka/dokka
 
   repositories {
     mavenCentral()
@@ -13,7 +13,7 @@ buildscript {
 
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+    classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.12.0" // https://mvnrepository.com/artifact/io.codearte.gradle.nexus/gradle-nexus-staging-plugin
     classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
   }
 }
@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-  compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
   testCompile "io.kotlintest:kotlintest:2.0.7" // includes only kotlin-reflect:1.1.51
   testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"

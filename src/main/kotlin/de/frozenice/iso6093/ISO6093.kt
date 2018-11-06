@@ -9,10 +9,11 @@ import java.text.DecimalFormatSymbols
  *
  * either signed or unsigned (positive and zero only)
  *
- * in signed, the plus can be replace by a space
+ * in signed, the plus can be replaced by a space
  *
  * signed zero is written with a plus or a space, no minus (negative zero) allowed
  */
+@Suppress("unused")
 enum class Representation {
   // ISO 6093, 6
   /**
@@ -53,7 +54,7 @@ enum class Representation {
    *
    * zero has only zeros in the significand and an exponent with a plus and only zeros
    *
-   * it is called normalized, if the absolute value of the significand is >= 0,1 and < 1
+   * it is called normalized, if the absolute value of the significand is >= 0.1 and < 1
    *
    * examples:
    * - 8,2E+00
@@ -70,7 +71,12 @@ enum class Representation {
  *
  * see ISO 6093, 4.1
  */
-enum class DecimalMark(val character: Char) {
+enum class DecimalMark(
+  /**
+   * The underlying [Char] representing this decimal marker.
+   */
+  val character: Char
+) {
   /**
    * the comma character: `,`
    */
@@ -83,30 +89,30 @@ enum class DecimalMark(val character: Char) {
 }
 
 private object Grammar {
-  val digit = """[0-9]""" // 0/1/2/3/4/5/6/7/8/9
-  val sign = """[\u002b\u002d]""" // + / -
-  val decimalMark = """[\u002c\u002e]""" // , / .
-  val space = """ """ // SPACE
-  val exponentMark = """[Ee]""" /// E / e
+  const val digit = """[0-9]""" // 0/1/2/3/4/5/6/7/8/9
+  const val sign = """[\u002b\u002d]""" // + / -
+  const val decimalMark = """[\u002c\u002e]""" // , / .
+  const val space = """ """ // SPACE
+  const val exponentMark = """[Ee]""" /// E / e
 
   // ISO 6093, 6.2
-  val unsignedNR1 = """($space*$digit$digit*)"""
-  val signedNR1 = """($space*(?<sign>$sign|$space)(?<number>$digit$digit*))"""
+  const val unsignedNR1 = """($space*$digit$digit*)"""
+  const val signedNR1 = """($space*(?<sign>$sign|$space)(?<number>$digit$digit*))"""
 
   // ISO 6093, 7.2
-  val unsignedNR2 = """($space*(?<number>$digit$digit*$decimalMark$digit*)|""" +
+  const val unsignedNR2 = """($space*(?<number>$digit$digit*$decimalMark$digit*)|""" +
     """$space*(?<number2>$digit*$decimalMark$digit$digit*))"""
-  val signedNR2 = """($space*(?<sign>$sign|$space)$digit$digit*$decimalMark$digit*|""" +
+  const val signedNR2 = """($space*(?<sign>$sign|$space)$digit$digit*$decimalMark$digit*|""" +
     """$space*(?<sign2>$sign|$space)$digit*$decimalMark$digit$digit*)"""
 
   // ISO 6093,7.3
-  val significand = """(?<significand>$digit$digit*$decimalMark$digit*|$digit*$decimalMark$digit$digit*)"""
-  val exponent = """(?<exponent>$sign?$digit$digit*)"""
-  val unsignedNR3 = """($space*$significand$exponentMark$exponent)"""
-  val signedNR3 = """($space*(?<sign>$sign|$space)$significand$exponentMark$exponent)"""
+  const val significand = """(?<significand>$digit$digit*$decimalMark$digit*|$digit*$decimalMark$digit$digit*)"""
+  const val exponent = """(?<exponent>$sign?$digit$digit*)"""
+  const val unsignedNR3 = """($space*$significand$exponentMark$exponent)"""
+  const val signedNR3 = """($space*(?<sign>$sign|$space)$significand$exponentMark$exponent)"""
 }
 
-private object Regexes {
+private object Regexps {
   val unsignedNR1 = Grammar.unsignedNR1.toRegex()
   val signedNR1 = Grammar.signedNR1.toRegex()
   val unsignedNR2 = Grammar.unsignedNR2.toRegex()
@@ -134,14 +140,14 @@ fun isValidNR1(str: String) = isValidNR1Unsigned(str) || isValidNR1Signed(str)
  *
  * @param str the string to check
  */
-fun isValidNR1Unsigned(str: String) = str.matches(Regexes.unsignedNR1)
+fun isValidNR1Unsigned(str: String) = str.matches(Regexps.unsignedNR1)
 
 /**
  * Checks if a string matches the NR1 representation in its signed form.
  *
  * @param str the string to check
  */
-fun isValidNR1Signed(str: String) = str.matches(Regexes.signedNR1)
+fun isValidNR1Signed(str: String) = str.matches(Regexps.signedNR1)
 
 /**
  * Checks if a string matches the NR2 representation.
@@ -155,14 +161,14 @@ fun isValidNR2(str: String) = isValidNR2Unsigned(str) || isValidNR2Signed(str)
  *
  * @param str the string to check
  */
-fun isValidNR2Unsigned(str: String) = str.matches(Regexes.unsignedNR2)
+fun isValidNR2Unsigned(str: String) = str.matches(Regexps.unsignedNR2)
 
 /**
  * Checks if a string matches the NR2 representation in its signed form.
  *
  * @param str the string to check
  */
-fun isValidNR2Signed(str: String) = str.matches(Regexes.signedNR2)
+fun isValidNR2Signed(str: String) = str.matches(Regexps.signedNR2)
 
 /**
  * Checks if a string matches the NR3 representation.
@@ -176,14 +182,14 @@ fun isValidNR3(str: String) = isValidNR3Unsigned(str) || isValidNR3Signed(str)
  *
  * @param str the string to check
  */
-fun isValidNR3Unsigned(str: String) = str.matches(Regexes.unsignedNR3)
+fun isValidNR3Unsigned(str: String) = str.matches(Regexps.unsignedNR3)
 
 /**
  * Checks if a string matches the NR3 representation in its signed form.
  *
  * @param str the string to check
  */
-fun isValidNR3Signed(str: String) = str.matches(Regexes.signedNR3)
+fun isValidNR3Signed(str: String) = str.matches(Regexps.signedNR3)
 
 /**
  * Parses a string in either of the three representations.

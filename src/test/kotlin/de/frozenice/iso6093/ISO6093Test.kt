@@ -4,7 +4,7 @@ import io.kotlintest.matchers.plusOrMinus
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.specs.StringSpec
 
-val tolerance = 0.0000000000001
+const val tolerance = 0.0000000000001
 
 class ISO6093Test : StringSpec({
   "parse NR1" {
