@@ -1,7 +1,7 @@
 package de.frozenice.iso6093
 
 import io.kotlintest.matchers.plusOrMinus
-import io.kotlintest.matchers.shouldBe
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
 const val tolerance = 0.0000000000001
